@@ -25,6 +25,11 @@ API_DEFS = [
         "desc": "The number of people in space at this moment. List of names when known.",
         "doclink": "http://open-notify.org/Open-Notify-API/People-In-Space",
         "docname": "People-In-Space"},
+    {
+        "title": "ISS Locations by dates",
+        "link": "/iss-locations-by-dates",
+        "desc": "ISS locations between 2 dates by interval"
+    }
 ]
 
 @app.route("/")
