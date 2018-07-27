@@ -26,6 +26,25 @@ def get_location():
     # Return the relevant timestamp and data
     return {"timestamp": timegm(now.timetuple()), "iss_position": {"latitude": lat, "longitude": lon}}
 
+def get_location_between_dates(start, end, interval):
+    """Compute the locations of the ISS between 2 dates with an interval in seconds"""
+
+    # Get latest TLE from redis
+    tle = json.loads(r.get("iss_tle"))
+    iss = ephem.readtle(str(tle[0]), str(tle[1]), str(tle[2]))
+
+    start_date = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
+    end_date = datetime.datetime.strptime(end, "%Y-%m-%dT%H:%M:%S")
+
+    positions = []
+    while start_date < end_date:
+      iss.compute(start_date)
+      lon = degrees(iss.sublong)
+      lat = degrees(iss.sublat)
+      positions.append({"timestamp": start_date, "latitude": lat, "longitude": lon})
+      start_date = start_date + datetime.timedelta(0, int(interval))
+    return {"iss_positions": positions}
+
 
 def get_tle():
     """Grab the current TLE"""
